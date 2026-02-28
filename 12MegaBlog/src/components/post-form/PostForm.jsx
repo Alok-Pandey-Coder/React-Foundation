@@ -19,6 +19,10 @@ function PostForm({ post }) {
   const userData = useSelector(state => state.auth.userData)
 
   const submit = async (data) => {
+    if (!userData) {
+      console.log("User not loaded yet");
+      return;
+    }
     if (post) {
       const file = data.image[0] ? await service.uploadFile(data.image[0]) : null
 
@@ -114,8 +118,13 @@ function PostForm({ post }) {
           className="mb-4"
           {...register("status", { required: true })}
         />
-        <Button type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full">
-          {post ? "Update" : "Submit"}
+        <Button
+          type="submit"
+          disabled={!userData}
+          bgColor={post ? "bg-green-500" : undefined}
+          className="w-full"
+        >
+          {userData ? (post ? "Update" : "Submit") : "Loading..."}
         </Button>
       </div>
     </form>
